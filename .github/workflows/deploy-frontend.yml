@@ -1,0 +1,33 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'yarn.lock'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies (Yarn)
+        run: yarn install --frozen-lockfile  # Équivalent de `npm ci`
+
+      - name: Build (Yarn)
+        run: yarn build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1  # Changez selon votre région
+
+      - name: Deploy to S3
+        run: aws s3 sync build/ s3://sentinelle-front-s3 --delete
