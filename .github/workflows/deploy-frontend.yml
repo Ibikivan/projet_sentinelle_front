@@ -20,9 +20,10 @@ jobs:
         run: yarn install --frozen-lockfile  # Équivalent de `npm ci`
       
       - name: Show API URL
-        run: echo "URL de l'API $API_URL"
+        run: echo "URL de l'API $VITE_API_URL"
         env:
-          API_URL: ${{ vars.API_URL }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_RETRY_LIMIT: ${{ vars.VITE_RETRY_LIMIT }}
 
       - name: Build (Yarn)
         run: yarn build
