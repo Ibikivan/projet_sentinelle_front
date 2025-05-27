@@ -12,7 +12,7 @@ const createSelectors = (_store) => {
     return store
 }
 
-export const useAppStrore = createSelectors(
+export const useAppStore = createSelectors(
     create(persist((set) => {
         return {
             user: null,
@@ -35,5 +35,5 @@ export const useAppStrore = createSelectors(
 )
 
 export const globalUpdateUser = (user) => {
-    useAppStrore.setState({ user: user })
+    useAppStore.setState({ user: user })
 }

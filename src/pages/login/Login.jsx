@@ -2,12 +2,12 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { login } from "../../utils/api/api"
 import { useMutation, useQueryClient } from "react-query"
-import { useAppStrore } from "../../app/store"
+import { useAppStore } from "../../app/store"
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
-  const updateProvideAuth = useAppStrore.use.updateProvideAuth()
+  const updateProvideAuth = useAppStore.use.updateProvideAuth()
   
   const queryClient = useQueryClient()
   const querKey = ['currentUser']
@@ -36,7 +36,7 @@ export default function Login() {
     setShowPassword(!showPassword)
   }
 
-  if (isLoading) return <h1>Connecting...</h1>
+  if (isLoading) return <span className="absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 icon-[line-md--loading-twotone-loop]"></span>
 
   return <div className='absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
     <div className='text-primary text-xl my-4 w-auto'>Logo</div>
