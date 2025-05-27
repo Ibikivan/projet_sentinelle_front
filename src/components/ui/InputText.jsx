@@ -1,4 +1,5 @@
-import withAuthorization from "../../auth/WithAutorization"
+import withAuthorization from "../../auth/withAutorization"
+
 
 
 /**
