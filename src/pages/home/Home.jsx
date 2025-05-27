@@ -4,8 +4,6 @@ import { usePageTitle } from "../../hooks/usePageTitle"
 export default function Home() {
     usePageTitle("Home page")
     const user = useAppStrore.use.user()
-
-    // console.log("User in Home page:", user)
     
     return <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
         <div className='text-primary text-xl my-4 w-auto'>Logo</div>
