@@ -18,6 +18,11 @@ jobs:
 
       - name: Install Dependencies (Yarn)
         run: yarn install --frozen-lockfile  # Équivalent de `npm ci`
+      
+      - name: Show API URL
+        run: echo "URL de l'API $API_URL"
+        env:
+          API_URL: ${{ vars.API_URL }}
 
       - name: Build (Yarn)
         run: yarn build

@@ -1,3 +1,9 @@
 @import "tailwindcss";
 
-@plugin "daisyui";
+@plugin "daisyui" {
+    themes: light, dark --prefersdark, winter --default;
+}
+
+@plugin "@iconify/tailwind4" {
+    scale: 1.8;
+}
