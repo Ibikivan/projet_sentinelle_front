@@ -12,10 +12,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      VITE_API_URL: ${{ vars.VITE_API_URL }}
-      VITE_RETRY_LIMIT: ${{ vars.VITE_RETRY_LIMIT }}
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,6 +23,9 @@ jobs:
         run: echo "URL de l'API $VITE_API_URL"
 
       - name: Build (Yarn)
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_RETRY_LIMIT: ${{ vars.VITE_RETRY_LIMIT }}
         run: yarn build
 
       - name: List Build Files
