@@ -8,12 +8,13 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const updateProvideAuth = useAppStore.use.updateProvideAuth()
+  const pushToast = useAppStore.use.pushToast()
   
   const queryClient = useQueryClient()
   const querKey = ['currentUser']
   const { isLoading, mutate: logUser, reset, isError, error } = useMutation((data) => login(data), {
     onSuccess: (data) => {
-      // alert(data.message)
+      pushToast({ message: data.message, type: 'success', duration: 3000 })
       updateProvideAuth(true)
       queryClient.invalidateQueries(querKey)
       reset()
@@ -36,8 +37,6 @@ export default function Login() {
     setShowPassword(!showPassword)
   }
 
-  if (isLoading) return <span className="absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 icon-[line-md--loading-twotone-loop]"></span>
-
   return <div className='absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
     <div className='text-primary text-xl my-4 w-auto'>Logo</div>
 
@@ -58,7 +57,10 @@ export default function Login() {
         <span className='label'>Mot de passe</span>
       </label>
 
-      <button className='btn btn-xl btn-primary my-8' type='submit'>Connexion</button>
+      <button className='btn btn-xl btn-primary my-8' type='submit'>
+        Connexion
+        {isLoading && <span className="loading loading-spinner ml-4"></span>}
+      </button>
     </form>
   </div>
 }

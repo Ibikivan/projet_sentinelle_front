@@ -2,6 +2,7 @@ import { useAppStore } from "../app/store"
 import { getCurrentUser } from "../utils/api/api"
 import { useQuery } from "react-query"
 import { toBoolean } from "../utils/helper"
+import MessageToast from "../components/ui/alerts/MassageToast"
 
 export default function AuthProvider({ children }) {
     const updateUser = useAppStore.use.updateUser()
@@ -32,5 +33,6 @@ export default function AuthProvider({ children }) {
     return <div className="relative h-screen">
         {/* Potentiel background travaillé ici */}
         {children}
+        <MessageToast />
     </div>
 }
