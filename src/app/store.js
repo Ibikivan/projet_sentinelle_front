@@ -26,6 +26,32 @@ export const useAppStore = createSelectors(
             redirectPath: null,
             updateRedirectPath(path) {
                 set({ redirectPath: path })
+            },
+            toasts: [
+                // { message: "New mail arrived.", type: 'info', duration: 3000 },
+                // { message: "Message sent successfully.", type: 'success', duration: 3000 },
+            ],
+            setToasts(toasts) {
+                set({ toast: toasts })
+            },
+            pushToast(toast) {
+                const idToast = {...toast, id: Date.now() + Math.random()} 
+                set((state) => ({
+                    toasts: [...state.toasts, idToast]
+                }))
+
+                if (idToast.duration) {
+                    setTimeout(() => {
+                        set((state) => ({
+                            toasts: state.toasts.filter(t => t !== idToast)
+                        }))
+                    }, idToast.duration)
+                }
+            },
+            removeToast(toastId) {
+                set((state) => ({
+                    toasts: state.toasts.filter(t => t.id !== toastId)
+                }))
             }
         }
     }, {
