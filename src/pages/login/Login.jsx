@@ -22,7 +22,7 @@ export default function Login() {
     },
     onError: (error) => {
       console.error("Error during login:", error)
-      alert(error.response.data.message)
+      pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error', duration: 3000 })
     }
   })
 

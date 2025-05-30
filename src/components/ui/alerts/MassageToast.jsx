@@ -20,7 +20,7 @@ export default function MessageToast() {
                     >
                         <span>{toast.message}</span>
                         {!toast.duration && <span
-                            className="icon-[line-md--close-circle-filled] text-danger cursor-pointer"
+                            className="icon-[line-md--close-circle-filled] text-error-content cursor-pointer"
                             onClick={() => removeToast(toast.id)}
                         ></span>}
                     </motion.div>

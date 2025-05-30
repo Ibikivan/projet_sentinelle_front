@@ -9,7 +9,7 @@ export default function Home() {
     let count = 1
 
     function onSubmit() {
-        pushToast({ message: `Bravo ${count} ! Action réussi`, type: 'danger' })
+        pushToast({ message: `Bravo ${count} ! Action réussi`, type: 'error' })
         count++
     }
     
