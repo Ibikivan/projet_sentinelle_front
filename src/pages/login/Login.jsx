@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { login } from "../../utils/api/api"
 import { useMutation, useQueryClient } from "react-query"
 import { useAppStore } from "../../app/store"
+import logo from "../../assets/sentinelle_logo.png"
+import { usePageTitle } from "../../hooks/usePageTitle"
 
 export default function Login() {
+  usePageTitle("Connexion")
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const updateProvideAuth = useAppStore.use.updateProvideAuth()
@@ -37,8 +40,8 @@ export default function Login() {
     setShowPassword(!showPassword)
   }
 
-  return <div className='absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-    <div className='text-primary text-xl my-4 w-auto'>Logo</div>
+  return <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+    <img src={logo} alt={`Sentinelle - logo`} className="w-50 h-50 mx-auto" />
 
     <form onSubmit={handleSubmitConnexion} className="card w-85 bg-base-100 shadow-xl p-6">
       <label className='floating-label my-4'>
