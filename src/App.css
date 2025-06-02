@@ -7,3 +7,24 @@
 @plugin "@iconify/tailwind4" {
     scale: 1.8;
 }
+
+.app_bg {
+    width: 100%;
+    min-height: 100vh;
+
+    background-image: 
+    url('/src/assets/blob_bg_top.svg'),
+    url('/src/assets/blob_bg_bottom.svg');
+
+    background-position:
+    -70% -50vh,
+    50% 20vh;
+
+    background-repeat:
+    no-repeat,
+    no-repeat;
+
+    background-size:
+    120% auto,
+    300% auto;
+}
