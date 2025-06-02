@@ -3,7 +3,7 @@ import { InputText } from "../../components/ui"
 import { usePageTitle } from "../../hooks/usePageTitle"
 
 export default function Home() {
-    usePageTitle("Home page")
+    usePageTitle("Accueille")
     const user = useAppStore.use.user()
     const pushToast = useAppStore.use.pushToast()
     let count = 1
