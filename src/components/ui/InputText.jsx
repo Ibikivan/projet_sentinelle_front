@@ -9,6 +9,8 @@ import withAuthorization from "../../auth/withAutorization"
  * @param {Object} props - Propriétés du composant.
  * @param {string} [props.id] - Identifiant unique de l'input.
  * @param {string} [props.name] - Nom de l'input (utilisé pour les formulaires).
+ * @param {string} [props.autoComplete] - Auto-completion du champ.
+ * @param {string} [props.required] - La valeur du champ est-elle requise à la completion du formulaire ?.
  * @param {string} [props.label] - Texte du label affiché au-dessus de l'input.
  * @param {string|number} [props.defaultValue] - Valeur par défaut de l'input (contrôlée).
  * @param {string|number} [props.value] - Valeur de l'input (contrôlée).
@@ -19,8 +21,8 @@ import withAuthorization from "../../auth/withAutorization"
  * @param {Object} [props.otherProps] - Autres propriétés additionnelles passées à l'input.
  * @returns {JSX.Element} Élément JSX représentant un champ de saisie texte avec label flottant.
  */
-function InputText({ id, name, label, defaultValue, value, onChange, placeholder, type = "text", className = "", ...props }) {
-    return <label className='floating-label my-4'>
+function InputText({ children, id, name, autoComplete, required, label, defaultValue, value, onChange, placeholder, type = "text", className = "", ...props }) {
+    return <label className={`floating-label my-4 ${children ? 'relative' : ''}`}>
         <input
             type={type}
             name={name ? name : id}
@@ -30,10 +32,15 @@ function InputText({ id, name, label, defaultValue, value, onChange, placeholder
             defaultValue={defaultValue}
             value={value}
             onChange={onChange}
+            autoComplete={autoComplete ? autoComplete : 'off'}
+            required={required ? required : false}
+            {...(id ? { 'aria-labelledby': id } : {})}
             {...props}
         />
+        {children}
         <span className='label'>{label ? label : ''}</span>
     </label>
 }
 
-export default withAuthorization(['ADMIN', 'USER'])(InputText)
+// export default withAuthorization(['ADMIN', 'USER'])(InputText)
+export default InputText

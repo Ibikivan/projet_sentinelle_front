@@ -6,10 +6,12 @@ import AdminHome from "../pages/adminHome/AdminHome";
 import Register from "../pages/register/Register";
 import Forbidden from "../pages/forbidden/Forbidden";
 import NotFound from "../pages/not_found/NotFound";
+import RestaureAccount from "../pages/register/RestaureAccount";
 
 export const routes = [
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
+    { path: "/restore-account", element: <RestaureAccount /> },
     {
         path: "/",
         element: <PrivateRoute allowedRoles={["USER", "ADMIN"]}>
