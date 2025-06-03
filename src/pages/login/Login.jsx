@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { login } from "../../utils/api/api"
 import { useMutation, useQueryClient } from "react-query"
 import { useAppStore } from "../../app/store"
 import logo from "../../assets/sentinelle_logo.png"
 import { usePageTitle } from "../../hooks/usePageTitle"
+import { InputText } from "../../components/ui"
+import Button from "../../components/ui/Button"
 
 export default function Login() {
   usePageTitle("Connexion")
@@ -15,7 +17,7 @@ export default function Login() {
   
   const queryClient = useQueryClient()
   const querKey = ['currentUser']
-  const { isLoading, mutate: logUser, reset, isError, error } = useMutation((data) => login(data), {
+  const { isLoading, mutate: logUser, reset } = useMutation((data) => login(data), {
     onSuccess: (data) => {
       pushToast({ message: data.message, type: 'success', duration: 3000 })
       updateProvideAuth(true)
@@ -24,8 +26,7 @@ export default function Login() {
       navigate('/', { replace: true })
     },
     onError: (error) => {
-      console.error("Error during login:", error)
-      pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error', duration: 3000 })
+      pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
     }
   })
 
@@ -44,26 +45,49 @@ export default function Login() {
     <img src={logo} alt={`Sentinelle - logo`} className="w-50 h-50 mx-auto" />
 
     <form onSubmit={handleSubmitConnexion} className="card w-85 bg-base-100 shadow-xl p-6">
-      <label className='floating-label my-4'>
-        <input type="text" name="phoneNumber" id="phoneNumber" placeholder='Numéro de téléphone' className='input input-xl' />
-        <span className='label'>Numéro de téléphone</span>
-      </label>
+      <InputText
+        name='phoneNumber'
+        id='phoneNumber'
+        placeholder='Numéro de téléphone'
+        className='input-xl'
+        label="Numéro de téléphone"
+      />
 
-      <label className='floating-label my-4 relative'>
-        <input type={showPassword ? 'text' : 'password'} name="password" id="password" placeholder='Mot de passe' className='input input-xl pr-14' />
+      <InputText
+        name='password'
+        id='password'
+        type={showPassword ? 'text' : 'password'}
+        placeholder='Mot de passe'
+        className='input-xl pr-14'
+        label="Mot de passe"
+      >
         <div className='absolute inset-y-0 right-3 flex items-center cursor-pointer z-3' onClick={toggleShowPassword}>
           {!showPassword
             ? <span className="icon-[weui--eyes-on-filled] text-primary"></span>
             : <span className="icon-[weui--eyes-off-filled] text-primary"></span>
           }
         </div>
-        <span className='label'>Mot de passe</span>
-      </label>
+      </InputText>
 
-      <button className='btn btn-xl btn-primary my-8' type='submit'>
-        Connexion
-        {isLoading && <span className="loading loading-spinner ml-4"></span>}
-      </button>
+      <div className="flex flex-col gap-2">
+        <label className="label cursor-pointer">
+          <input
+            type="checkbox"
+            id="remember_me"
+            name="remember_me"
+            value={true}
+            className="toggle border-secondary-600 bg-secondary-500 checked:border-primary-500 checked:bg-primary-400 checked:text-primary-800"
+            disabled={isLoading}
+          />
+          rester connecté
+        </label>
+
+        <Link to='#' className="link link-hover self-end" disabled={isLoading}>Mot de passe oublié ?</Link>
+      </div>
+
+      <Button classNames='btn-xl btn-primary my-4' type="submit" content='Connexion' isLoading={isLoading} />
+
+      <Link to='/register' className="link link-hover text-right" disabled={isLoading}>Créer un compte</Link>
     </form>
   </div>
 }
