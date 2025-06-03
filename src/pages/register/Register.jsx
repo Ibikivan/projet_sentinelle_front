@@ -28,13 +28,17 @@ export default function Register() {
     })
     const cities = data || []
 
-    const { isLoading: creating, mutate: create, reset } = useMutation(data => createUser(data), {
+    const { isLoading: creating, mutate: create, reset, error: unCreated } = useMutation(data => createUser(data), {
         onSuccess: (data) => {
             pushToast({ message: data.message, type: 'success', duration: 3000 })
             reset()
             navigate('/login', { replace: true })
         },
         onError: (error) => {
+            if (error?.response?.data?.code === 'GONE' && error?.status === 410) {
+                navigate('/restore-account', { state: error?.response?.data?.message })
+                return
+            }
             pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
             // penser à naviger vers la page de récupération en cas de compte déjà existant
         }
@@ -63,8 +67,8 @@ export default function Register() {
 
     return <div className='py-10'>
         <div className="flex items-center w-90 sm:w-150 mb-6 gap-4">
-            <img src={logo} alt={`Sentinelle - logo`} className="w-15 h-15" />
-            <h1 className="text-center text-2xl font-bold">Inscription - Projet Sentinelle</h1>
+            <img src={logo} alt="Sentinelle - logo" className="w-15 h-15" />
+            <h1 className="text-2xl font-bold text-shadow-sm">Inscription - Projet Sentinelle</h1>
         </div>
 
         <div className="card w-90 sm:w-150 mx-auto bg-base-100 shadow-xl p-6">
@@ -72,7 +76,7 @@ export default function Register() {
                 <div className="space-y-10">
                     <fieldset className="fieldset bg-base-200 border-base-300/10 rounded-md px-4 pb-8">
                         <legend className="fieldset-legend">
-                            <h2 className="text-base/7 font-semibold">Identifiants</h2>
+                            <h2 className="text-base/7 font-semibold text-shadow-xs">Identifiants</h2>
                         </legend>
                         <p className="mt-1 text-sm/6 text-gray-500">Ces information servirons à vous authentifier.</p>
 
@@ -105,7 +109,7 @@ export default function Register() {
 
                     <fieldset className="fieldset bg-base-200 border-base-300/10 rounded-md px-4 pb-8">
                         <legend className="fieldset-lengend">
-                            <h2 className="text-base/7 font-semibold">Mot de passe</h2>
+                            <h2 className="text-base/7 font-semibold text-shadow-xs">Mot de passe</h2>
                         </legend>
                         <p className="mt-1 text-sm/6 text-gray-500">Votre mdp dois avoir au moins <strong>8</strong> caractères.</p>
 
@@ -150,7 +154,7 @@ export default function Register() {
 
                     <fieldset className="fieldset bg-base-200 border-base-300/10 rounded-md px-4 pb-8">
                         <legend className="fieldset-legend">
-                            <h2 className="text-base/7 font-semibold">Informations personnelles</h2>
+                            <h2 className="text-base/7 font-semibold text-shadow-xs">Informations personnelles</h2>
                         </legend>
                         <p className="mt-1 text-sm/6 text-gray-500">Comment pourons nous vous distinguer ?</p>
 
@@ -195,7 +199,7 @@ export default function Register() {
                     <Button classNames="btn-ghost text-sm/6 font-semibold" content="Annuler" type="reset" disabled={creating} />
 
                     <div className="flex items-center gap-x-6">
-                        <p className="text-sm/6 text-gray-500">Déjà inscrit ? <Link to='/login' className="link link-hover" disabled={creating}><strong>Vous connecter</strong></Link></p>
+                        <p className="text-sm/6 text-gray-500">Déjà inscrit ? <Link to='/login' className="link link-hover text-shadow-xs" disabled={creating}><strong>Vous connecter</strong></Link></p>
 
                         <Button classNames="btn-primary text-sm font-semibold shadow-sm" content="Enregistrer" type="submit" isLoading={creating} />
                     </div>
