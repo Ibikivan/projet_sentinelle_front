@@ -34,3 +34,8 @@ export const requestToChangePhoneNumber = async (newPhoneNumber) => {
     const response = await axiosInstance.post('/auth/change-phone-number', newPhoneNumber)
     return response.data
 }
+
+export const currentUserChangePwd = async (data) => {
+    const response = await axiosInstance.post('/auth/change-password', data)
+    return response.data
+}
