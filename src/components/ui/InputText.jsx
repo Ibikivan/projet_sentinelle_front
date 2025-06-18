@@ -21,7 +21,7 @@ import withAuthorization from "../../auth/withAutorization"
  * @param {Object} [props.otherProps] - Autres propriétés additionnelles passées à l'input.
  * @returns {JSX.Element} Élément JSX représentant un champ de saisie texte avec label flottant.
  */
-function InputText({ children, id, name, autoComplete, required, label, defaultValue, value, onChange, placeholder, type = "text", className = "", ...props }) {
+function InputText({ children, id, name, autoComplete, required, label, defaultValue, value, onChange, placeholder, type= "text", className= "", ...props }) {
     return <label className={`floating-label my-4 ${children ? 'relative' : ''}`}>
         <input
             type={type}

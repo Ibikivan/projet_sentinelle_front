@@ -19,3 +19,13 @@ export const getAllCities = async () => {
     const response = await axiosInstance.get('/cities')
     return response.data
 }
+
+export const requestAccountRestoration = async (phoneNumber) => {
+    const response = await axiosInstance.post('/users/request-restauration', { phoneNumber })
+    return response.data
+}
+
+export const verifyOTP = async (data) => {
+    const response = await axiosInstance.post('/users/verify-restauration', data)
+    return response.data
+}
