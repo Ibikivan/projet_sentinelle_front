@@ -25,7 +25,12 @@ export const requestAccountRestoration = async (phoneNumber) => {
     return response.data
 }
 
-export const verifyOTP = async (data) => {
+export const verifyRestosationOTP = async (data) => {
     const response = await axiosInstance.post('/users/verify-restauration', data)
+    return response.data
+}
+
+export const requestToChangePhoneNumber = async (newPhoneNumber) => {
+    const response = await axiosInstance.post('/auth/change-phone-number', newPhoneNumber)
     return response.data
 }

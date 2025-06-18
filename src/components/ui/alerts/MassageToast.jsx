@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAppStore } from "../../../app/store";
 import { AnimatePresence, motion } from "motion/react";
@@ -13,7 +12,7 @@ export default function MessageToast() {
                 {toasts.map((toast) => (
                     <motion.div
                         key={toast.id}
-                        className={`alert alert-${toast.type} shadow-sm`}
+                        className={`alert alert-${toast.type} shadow-sm flex justify-between`}
                         initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 30 }}

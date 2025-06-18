@@ -16,7 +16,7 @@ export default function RestaureAccount() {
             step: 1,
             title: "Compte supprimé",
             description: "Un compte supprimé existe",
-            content: <RequestToRestaure requesterNumber={requesterNumber} setStep={setStep} />
+            content: <RequestToRestaure useCase={'request_to_change_phoneNumber'} requesterNumber={requesterNumber} setStep={setStep} />
         },
         {
             step: 2,

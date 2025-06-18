@@ -2,20 +2,22 @@ import { useMutation } from "react-query";
 import { useAppStore } from "../../app/store";
 import { InputText } from "../ui";
 import Button from "../ui/Button";
-import { verifyOTP } from "../../utils/api/api";
+import { verifyRestosationOTP } from "../../utils/api/api";
 import { useNavigate } from "react-router-dom";
 
 export default function VerifyOTP({ requesterNumber, setStep }) {
     
     const pushToast = useAppStore.use.pushToast()
     const navigate = useNavigate()
-    const { isLoading, mutate: verify, reset } = useMutation(data => verifyOTP(data), {
+    const { isLoading, mutate: verify, reset } = useMutation(data => verifyRestosationOTP(data), {
         onSuccess: (data) => {
             pushToast({
                 type: 'success',
                 message: data.message,
+                duration: 3000
             })
             reset()
+            // sessionStorage.removeItem('phoneNumber') // à activer après les tests
             setStep(0)
             navigate('/login', { replace: true })
         },
@@ -33,12 +35,11 @@ export default function VerifyOTP({ requesterNumber, setStep }) {
             pushToast({ message: "Le code doit contenir 6 chiffres.", type: 'error' })
             return
         }
-
-        const otpData = {
+        
+        verify({
             otpCode: otpCode,
             phoneNumber: requesterNumber
-        }
-        verify(otpData)
+        })
     }
 
     return <div>
@@ -46,7 +47,7 @@ export default function VerifyOTP({ requesterNumber, setStep }) {
         <ul className="list bg-base-100 rounded-box shadow-md">
             <li className="flex flex-col items-center gap-2 py-4 sm:flex-row sm:py-0 sm:px-4 sm:gap-4">
                 <span className="icon-[line-md--check-all] text-success"></span>
-                <form id="verify" onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1 px-4">
+                <form id="verify" onSubmit={handleSubmit} className="flex flex-col flex-1 px-4">
                     <InputText
                         id="otpCode"
                         name="otpCode"
