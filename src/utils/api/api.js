@@ -39,3 +39,8 @@ export const currentUserChangePwd = async (data) => {
     const response = await axiosInstance.post('/auth/change-password', data)
     return response.data
 }
+
+export const requestForChangeForgotedPwd = async (phoneNumber) => {
+    const response = await axiosInstance.post('/auth/forgot-password', phoneNumber)
+    return response
+}

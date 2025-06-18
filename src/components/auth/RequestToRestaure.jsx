@@ -1,10 +1,11 @@
 import { useMutation } from "react-query";
 import Button from "../ui/Button";
 import { useAppStore } from "../../app/store";
-import { currentUserChangePwd, requestAccountRestoration, requestToChangePhoneNumber } from "../../utils/api/api";
+import { currentUserChangePwd, requestAccountRestoration, requestForChangeForgotedPwd, requestToChangePhoneNumber } from "../../utils/api/api";
 import { InputText } from "../ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ChangePassword from "./ChangePassword";
 
 export default function RequestToRestaure({ useCase, requesterNumber, setStep }) {
 
@@ -45,6 +46,15 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
         onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
     })
 
+    const { isLoading: requesting, mutate: request, reset: resetRequest } = useMutation(data => requestForChangeForgotedPwd(data), {
+        onSuccess: (data) => {
+            pushToast({type: 'success', message: data.message, duration: 3000})
+            resetRequest()
+            setStep(step => step++)
+        },
+        onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
+    })
+
     function handlePhoneNumberChange(e) {
         e.preventDefault()
         const formData = new FormData(e.target)
@@ -65,6 +75,7 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
 
         if (!data.oldPassword || !data.newPassword) {
             pushToast({ message: "Veuillez renseigner tous les champs.", type: 'error' })
+            return
         }
 
         if (data.oldPassword === data.newPassword) {
@@ -72,9 +83,20 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
             return
         }
 
-        console.log('change pwd data :', data)
-
         changePwd(data)
+    }
+
+    function handleRequesting(e) {
+        e.preventDefault()
+        const formData = new FormData(e.target)
+        const phoneNumber = formData.get('phoneNumber')
+
+        if (!phoneNumber) {
+            pushToast({ message: "Veuillez renseigner le numero à vérifier.", type: 'error' })
+            return
+        }
+
+        request({ phoneNumber: phoneNumber })
     }
 
     function toggleShowPassword() {
@@ -108,41 +130,27 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
         },
         change_user_password: {
             description: 'Vous allez changer le mot de passe de votre compte',
-            body: (<form onSubmit={handleChangePwd} className="flex flex-col flex-1 p-4">
+            body: <ChangePassword
+                handleChangePwd={handleChangePwd}
+                toggleShowPassword={toggleShowPassword}
+                showPassword={showPassword}
+                changingPwd={changingPwd}
+            />
+        },
+        forgotten_pwd: {
+            description: 'Vérifiez votre numéro de téléphone pour réinitialiser le mdp',
+            caseIncon: <span className="icon-[line-md--account-alert-loop]"></span>,
+            body: (<form id="forgotten_pwd" onSubmit={handleRequesting} className="flex flex-col flex-1">
                 <InputText
-                    id="oldPassword"
-                    name="oldPassword"
-                    label="Entrez votre mot de passe actuel"
-                    placeholder="Entrez votre mot de passe actuel"
-                    type={showPassword ? 'text' : 'password'}
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    label="Entrez votre numéro"
+                    placeholder="Entrez votre numéro"
                     required={true}
-                    className="sm:border-base-300/10 focus:outline-none"
-                >
-                    <div className='absolute inset-y-0 right-3 flex items-center cursor-pointer z-3' onClick={toggleShowPassword}>
-                        {!showPassword
-                            ? <span className="icon-[weui--eyes-on-filled] text-primary"></span>
-                            : <span className="icon-[weui--eyes-off-filled] text-primary"></span>
-                        }
-                    </div>
-                </InputText>
-                <InputText
-                    id="newPassword"
-                    name="newPassword"
-                    label="Entrez le nouveau mot de passe"
-                    placeholder="Entrez le nouveau mot de passe"
-                    type={showPassword ? 'text' : 'password'}
-                    required={true}
-                    className="sm:border-base-300/10 focus:outline-none"
-                >
-                    <div className='absolute inset-y-0 right-3 flex items-center cursor-pointer z-3' onClick={toggleShowPassword}>
-                        {!showPassword
-                            ? <span className="icon-[weui--eyes-on-filled] text-primary"></span>
-                            : <span className="icon-[weui--eyes-off-filled] text-primary"></span>
-                        }
-                    </div>
-                </InputText>
-                <Button type="submit" content="Changer" classNames="btn-primary mt-2" isLoading={changingPwd} />
-            </form>)
+                    className="sm:border-base-300/10"
+                />
+            </form>),
+            button: <Button type="submit" content="Envoyer" classNames="btn-primary" isLoading={requesting} form="forgotten_pwd" />
         }
     }
 
