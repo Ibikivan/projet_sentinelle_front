@@ -7,11 +7,13 @@ import Register from "../pages/register/Register";
 import Forbidden from "../pages/forbidden/Forbidden";
 import NotFound from "../pages/not_found/NotFound";
 import RestaureAccount from "../pages/register/RestaureAccount";
+import PwdForgotten from "../pages/pwdForgotten/PwdForgotten";
 
 export const routes = [
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/restore-account", element: <RestaureAccount /> },
+    { path: "/pwd-forgotten", element: <PwdForgotten /> },
     {
         path: "/",
         element: <PrivateRoute allowedRoles={["USER", "ADMIN"]}>

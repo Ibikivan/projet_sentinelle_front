@@ -1,17 +1,20 @@
 import { useMutation } from "react-query";
 import Button from "../ui/Button";
 import { useAppStore } from "../../app/store";
-import { currentUserChangePwd, requestAccountRestoration, requestForChangeForgotedPwd, requestToChangePhoneNumber } from "../../utils/api/api";
+import { currentUserChangePwd, requestAccountRestoration, requestForChangeForgotedPwd, requestToChangePhoneNumber, resetPassword } from "../../utils/api/api";
 import { InputText } from "../ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChangePassword from "./ChangePassword";
 
-export default function RequestToRestaure({ useCase, requesterNumber, setStep }) {
+export default function RequestTo({ useCase, requesterNumber, setStep }) {
 
     const [showPassword, setShowPassword] = useState(false)
+    const [showOldPwd, setShowOldPwd] = useState(false)
+
     const pushToast = useAppStore.use.pushToast()
     const navigate = useNavigate()
+    const otpId = sessionStorage.getItem('otpId')
 
     const { isLoading: restoring, mutate: restore, reset: resetRestore } = useMutation(data => requestAccountRestoration(data), {
         onSuccess: (data) => {
@@ -21,7 +24,7 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
                 duration: 3000
             })
             resetRestore()
-            setStep(step => step++)
+            setStep(step => step + 1)
         },
         onError: (error) => {
             pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
@@ -32,7 +35,7 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
         onSuccess: (data) => {
             pushToast({type: 'success', message: data.message, duration: 3000})
             resetChange()
-            setStep(step => step++)
+            setStep(step => step + 1)
         },
         onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
     })
@@ -50,7 +53,19 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
         onSuccess: (data) => {
             pushToast({type: 'success', message: data.message, duration: 3000})
             resetRequest()
-            setStep(step => step++)
+            setStep(step => step + 1)
+        },
+        onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
+    })
+
+    const { isLoading: reseting, mutate: reset, reset: restPwd } = useMutation(data => resetPassword(data), {
+        onSuccess: (data) => {
+            pushToast({type: 'success', message: data.message, duration: 3000})
+            sessionStorage.removeItem('phoneNumber')
+            sessionStorage.removeItem('otpId')
+            restPwd()
+            setStep(0)
+            navigate('/login', { replace: true })
         },
         onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
     })
@@ -83,7 +98,12 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
             return
         }
 
-        changePwd(data)
+        if (data.newPassword !== data.confirm_pwd) {
+            pushToast({ message: "Les nouveau mdp sont différents.", type: 'error' })
+            return
+        }
+
+        changePwd({ oldPassword: data.oldPassword, newPassword: data.newPassword })
     }
 
     function handleRequesting(e) {
@@ -96,11 +116,33 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
             return
         }
 
-        request({ phoneNumber: phoneNumber })
+        sessionStorage.setItem('phoneNumber', phoneNumber)
+        request({ phoneNumber })
+    }
+
+    function handleRestPwd(e) {
+        e.preventDefault()
+        const data = Object.fromEntries(new FormData(e.target))
+
+        if (!data.confirm_pwd || !data.newPassword) {
+            pushToast({ message: "Veuillez renseigner tous les champs.", type: 'error' })
+            return
+        }
+
+        if (data.newPassword !== data.confirm_pwd) {
+            pushToast({ message: "Les mdps ne correspondents pas.", type: 'error' })
+            return
+        }
+
+        reset({ otpId, newPassword: data.newPassword })
     }
 
     function toggleShowPassword() {
         setShowPassword(!showPassword)
+    }
+
+    function toggleShowOldPwd() {
+        setShowOldPwd(!showOldPwd)
     }
 
     const usesCases = {
@@ -133,7 +175,9 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
             body: <ChangePassword
                 handleChangePwd={handleChangePwd}
                 toggleShowPassword={toggleShowPassword}
+                toggleShowOldPwd={toggleShowOldPwd}
                 showPassword={showPassword}
+                showOldPwd={showOldPwd}
                 changingPwd={changingPwd}
             />
         },
@@ -150,7 +194,19 @@ export default function RequestToRestaure({ useCase, requesterNumber, setStep })
                     className="sm:border-base-300/10"
                 />
             </form>),
-            button: <Button type="submit" content="Envoyer" classNames="btn-primary" isLoading={requesting} form="forgotten_pwd" />
+            button: <Button type="submit" content="Vérifier" classNames="btn-primary" isLoading={requesting} form="forgotten_pwd" />
+        },
+        reset_password: {
+            description: 'Veuillez réinitialiser votre mot de passe',
+            body: <ChangePassword
+                handleChangePwd={handleRestPwd}
+                toggleShowPassword={toggleShowPassword}
+                toggleShowOldPwd={toggleShowOldPwd}
+                showPassword={showPassword}
+                showOldPwd={showOldPwd}
+                changingPwd={reseting}
+                isForgotten={true}
+            />
         }
     }
 

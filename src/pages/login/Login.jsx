@@ -82,7 +82,7 @@ export default function Login() {
           rester connecté
         </label>
 
-        <Link to='#' className="link link-hover self-end" disabled={isLoading}>Mot de passe oublié ?</Link>
+        <Link to='/pwd-forgotten' className="link link-hover self-end" disabled={isLoading}>Mot de passe oublié ?</Link>
       </div>
 
       <Button classNames='btn-xl btn-primary my-4' type="submit" content='Connexion' isLoading={isLoading} />

@@ -25,13 +25,18 @@ export const requestAccountRestoration = async (phoneNumber) => {
     return response.data
 }
 
-export const verifyRestosationOTP = async (data) => {
+export const verifyRestorationOTP = async (data) => {
     const response = await axiosInstance.post('/users/verify-restauration', data)
     return response.data
 }
 
 export const requestToChangePhoneNumber = async (newPhoneNumber) => {
     const response = await axiosInstance.post('/auth/change-phone-number', newPhoneNumber)
+    return response.data
+}
+
+export const verifyNumberChangeOtp = async (data) => {
+    const response = await axiosInstance.post('/auth/verify-phone-otp', data)
     return response.data
 }
 
@@ -42,5 +47,15 @@ export const currentUserChangePwd = async (data) => {
 
 export const requestForChangeForgotedPwd = async (phoneNumber) => {
     const response = await axiosInstance.post('/auth/forgot-password', phoneNumber)
-    return response
+    return response.data
+}
+
+export const verifyChangePwdOtp = async (data) => {
+    const response = await axiosInstance.post('/auth/verify-password-otp', data)
+    return response.data
+}
+
+export const resetPassword = async (data) => {
+    const response = await axiosInstance.post('/auth/reset-password', data)
+    return response.data
 }
