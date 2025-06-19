@@ -1,29 +1,31 @@
 import { useState } from "react"
 import logo from "../../assets/sentinelle_logo.png"
-import { useLocation } from "react-router-dom"
 import { usePageTitle } from "../../hooks/usePageTitle"
 import RequestTo from "../../components/auth/RequestTo"
 import VerifyOTP from "../../components/auth/VerifyOTP"
 
-export default function RestaureAccount() {
+export default function PwdForgotten() {
 
     const [step, setStep] = useState(0)
-    const location = useLocation()
-    const requesterNumber = sessionStorage.getItem('phoneNumber') ||  location.state?.phoneNumber
-
     const restorationStep = [
         {
             step: 1,
-            title: "Compte supprimé",
-            description: "Un compte supprimé existe",
-            content: <RequestTo useCase={'request_to_restore_account'} requesterNumber={requesterNumber} setStep={setStep} />
+            title: "Mot de passe Oublié",
+            description: "Récupération de compte",
+            content: <RequestTo useCase={'forgotten_pwd'} setStep={setStep} />
         },
         {
             step: 2,
-            title: "Restauration du compte",
+            title: "Vérification de vos informations",
             description: "Un email a été envoyé.",
-            content: <VerifyOTP useCase={'request_to_restore_account'} requesterNumber={requesterNumber} setStep={setStep} />
+            content: <VerifyOTP useCase={'forgotten_pwd'} setStep={setStep} />
         },
+        {
+            step: 3,
+            title: "Réinitialisation du mdp",
+            description: "Vous pouvez maintenant changer de mdp.",
+            content: <RequestTo useCase={'reset_password'} setStep={setStep} />
+        }
     ]
     
     usePageTitle(restorationStep[step].title)

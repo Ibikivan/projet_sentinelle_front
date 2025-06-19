@@ -28,17 +28,19 @@ export default function Register() {
     })
     const cities = data || []
 
-    const { isLoading: creating, mutate: create, reset, error: unCreated } = useMutation(data => createUser(data), {
+    const { isLoading: creating, mutate: create, reset } = useMutation(data => createUser(data), {
         onSuccess: (data) => {
             pushToast({ message: data.message, type: 'success', duration: 3000 })
             reset()
+            sessionStorage.removeItem('phoneNumber')
             navigate('/login', { replace: true })
         },
         onError: (error) => {
             if (error?.response?.data?.code === 'GONE' && error?.status === 410) {
-                navigate('/restore-account', { state: error?.response?.data?.message })
+                navigate('/restore-account', { state: {phoneNumber: error?.response?.data?.message} }) // remove state if not needed
                 return
             }
+            sessionStorage.removeItem('phoneNumber')
             pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
             // penser à naviger vers la page de récupération en cas de compte déjà existant
         }
@@ -61,6 +63,7 @@ export default function Register() {
             pushToast({ message: "Les mots de passe ne correspondent pas.", type: 'error' })
             return
         }
+        sessionStorage.setItem('phoneNumber', data.phoneNumber)
         delete data.pwd_confirmation
         create(data)
     }
