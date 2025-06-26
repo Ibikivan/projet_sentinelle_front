@@ -8,6 +8,7 @@ import Forbidden from "../pages/forbidden/Forbidden";
 import NotFound from "../pages/not_found/NotFound";
 import RestaureAccount from "../pages/register/RestaureAccount";
 import PwdForgotten from "../pages/pwdForgotten/PwdForgotten";
+import UserHome from "../components/user/UserHome";
 
 export const routes = [
     { path: "/login", element: <Login /> },
@@ -18,7 +19,13 @@ export const routes = [
         path: "/",
         element: <PrivateRoute allowedRoles={["USER", "ADMIN"]}>
             <Home />
-        </PrivateRoute>
+        </PrivateRoute>,
+        children: [
+            {
+                path: '',
+                element: <UserHome />
+            }
+        ]
     },
     {
         path: "/admin",

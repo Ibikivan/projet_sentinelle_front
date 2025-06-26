@@ -7,6 +7,7 @@ import logo from "../../assets/sentinelle_logo.png"
 import { usePageTitle } from "../../hooks/usePageTitle"
 import { InputText } from "../../components/ui"
 import Button from "../../components/ui/Button"
+import { motion } from "motion/react"
 
 export default function Login() {
   usePageTitle("Connexion")
@@ -42,7 +43,7 @@ export default function Login() {
   }
 
   return <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-    <img src={logo} alt={`Sentinelle - logo`} className="w-50 h-50 mx-auto" />
+    <motion.img layoutId="layout-logo" src={logo} alt={`Sentinelle - logo`} className="w-50 h-50 mx-auto" />
 
     <form onSubmit={handleSubmitConnexion} className="card w-85 bg-base-100 shadow-xl p-6">
       <InputText

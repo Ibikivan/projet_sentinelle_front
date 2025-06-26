@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom"
 import { usePageTitle } from "../../hooks/usePageTitle"
 import RequestTo from "../../components/auth/RequestTo"
 import VerifyOTP from "../../components/auth/VerifyOTP"
+import { motion } from "motion/react"
 
 export default function RestaureAccount() {
 
@@ -30,7 +31,7 @@ export default function RestaureAccount() {
 
     return <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 py-10">
         <div className="flex items-center w-90 sm:w-150 mb-6 gap-4">
-            <img src={logo} alt="Sentinelle - logo" className="w-15 h-15" />
+            <motion.img layoutId="layout-logo" src={logo} alt="Sentinelle - logo" className="w-15 h-15" />
             <h1 className="text-2xl font-bold text-shadow-sm">{restorationStep[step].title} - Projet Sentinelle</h1>
         </div>
 
