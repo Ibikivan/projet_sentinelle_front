@@ -83,12 +83,20 @@ export default function Login() {
           rester connecté
         </label>
 
-        <Link to='/pwd-forgotten' className="link link-hover self-end" disabled={isLoading}>Mot de passe oublié ?</Link>
+        <Link
+          to={isLoading ? undefined : '/pwd-forgotten'}
+          className={`link self-end ${isLoading ? 'pointer-events-none cursor-not-allowed opacity-50' : 'link-hover'}`}
+          aria-disabled={isLoading}
+        >Mot de passe oublié ?</Link>
       </div>
 
       <Button classNames='btn-xl btn-primary my-4' type="submit" content='Connexion' isLoading={isLoading} />
 
-      <Link to='/register' className="link link-hover text-right" disabled={isLoading}>Créer un compte</Link>
+      <Link
+        to={isLoading ? undefined : '/register'}
+        className={`link text-right ${isLoading ? 'pointer-events-none cursor-not-allowed opacity-50' : 'link-hover'}`}
+        aria-disabled={isLoading}
+      >Créer un compte</Link>
     </form>
   </div>
 }

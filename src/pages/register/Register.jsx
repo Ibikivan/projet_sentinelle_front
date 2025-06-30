@@ -203,7 +203,11 @@ export default function Register() {
                     <Button classNames="btn-ghost text-sm/6 font-semibold" content="Annuler" type="reset" disabled={creating} />
 
                     <div className="flex items-center gap-x-6">
-                        <p className="text-sm/6 text-gray-500">Déjà inscrit ? <Link to='/login' className="link link-hover text-shadow-xs" disabled={creating}><strong>Vous connecter</strong></Link></p>
+                        <p className="text-sm/6 text-gray-500">Déjà inscrit? <Link
+                            to={creating ? undefined : '/login'}
+                            className={`link ${creating ? 'pointer-events-none cursor-not-allowed opacity-50' : 'link-hover text-shadow-xs'}`}
+                            aria-disabled={creating}
+                        ><strong>Vous connecter</strong></Link></p>
 
                         <Button classNames="btn-primary text-sm font-semibold shadow-sm" content="Enregistrer" type="submit" isLoading={creating} />
                     </div>
