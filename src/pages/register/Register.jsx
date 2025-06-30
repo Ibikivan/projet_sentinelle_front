@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "react-query"
 import { createUser, getAllCities } from "../../utils/api/api"
 import { toBoolean } from "../../utils/helper"
 import { useAppStore } from "../../app/store"
+import { motion } from "motion/react"
 
 export default function Register() {
     usePageTitle("Inscription")
@@ -70,7 +71,7 @@ export default function Register() {
 
     return <div className='py-10'>
         <div className="flex items-center w-90 sm:w-150 mb-6 gap-4">
-            <img src={logo} alt="Sentinelle - logo" className="w-15 h-15" />
+            <motion.img layoutId="layout-logo" src={logo} alt="Sentinelle - logo" className="w-15 h-15" />
             <h1 className="text-2xl font-bold text-shadow-sm">Inscription - Projet Sentinelle</h1>
         </div>
 

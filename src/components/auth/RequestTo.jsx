@@ -12,6 +12,7 @@ export default function RequestTo({ useCase, requesterNumber, setStep }) {
     const [showPassword, setShowPassword] = useState(false)
     const [showOldPwd, setShowOldPwd] = useState(false)
 
+    const step = parseInt(sessionStorage.getItem('step'), 10) || 0
     const pushToast = useAppStore.use.pushToast()
     const navigate = useNavigate()
     const otpId = sessionStorage.getItem('otpId')
@@ -24,7 +25,7 @@ export default function RequestTo({ useCase, requesterNumber, setStep }) {
                 duration: 3000
             })
             resetRestore()
-            setStep(step => step + 1)
+            setStep(step + 1)
         },
         onError: (error) => {
             pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
@@ -35,7 +36,7 @@ export default function RequestTo({ useCase, requesterNumber, setStep }) {
         onSuccess: (data) => {
             pushToast({type: 'success', message: data.message, duration: 3000})
             resetChange()
-            setStep(step => step + 1)
+            setStep(step + 1)
         },
         onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
     })
@@ -53,7 +54,7 @@ export default function RequestTo({ useCase, requesterNumber, setStep }) {
         onSuccess: (data) => {
             pushToast({type: 'success', message: data.message, duration: 3000})
             resetRequest()
-            setStep(step => step + 1)
+            setStep(step + 1)
         },
         onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
     })
