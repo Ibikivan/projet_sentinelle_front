@@ -10,6 +10,7 @@ export default function VerifyOTP({ useCase, requesterNumber, setStep }) {
     const pushToast = useAppStore.use.pushToast()
     const navigate = useNavigate()
     const phoneNumber = sessionStorage.getItem('phoneNumber')
+    const step = parseInt(sessionStorage.getItem('step'), 10) || 0
 
     const { isLoading: restoring, mutate: restore, reset: resetRestore } = useMutation(data => verifyRestorationOTP(data), {
         onSuccess: (data) => {
@@ -40,7 +41,7 @@ export default function VerifyOTP({ useCase, requesterNumber, setStep }) {
             sessionStorage.setItem("otpId", data.otp.id)
             pushToast({ type: 'success', message: data.message, duration: 3000 })
             resetPwd()
-            setStep(step => (step + 1))
+            setStep(step + 1)
         },
         onError: (error) => pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
     })
