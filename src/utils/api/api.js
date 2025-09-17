@@ -15,8 +15,13 @@ export const getCurrentUser = async () => {
     return response.data
 }
 
-export const getAllCities = async () => {
-    const response = await axiosInstance.get('/cities')
+export const getAllCities = async (signal, query) => {let queryParams = {}
+    if (query) queryParams.q = query
+
+    const response = await axiosInstance.get("/cities", {
+        params: queryParams,
+        signal
+    })
     return response.data
 }
 

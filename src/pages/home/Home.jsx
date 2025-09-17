@@ -10,7 +10,7 @@ export default function Home() {
     
     return <div className="w-screen min-h-screen flex flex-col justify-between">
         <div className="flex flex-col grow">
-            <Header />
+            {/* <Header /> */}
 
             <div className="flex h-full grow">
                 <SideBar />
@@ -19,7 +19,7 @@ export default function Home() {
             </div>
         </div>
 
-        <Footer />
+        {/* <Footer /> */}
     </div>
 
 }

@@ -4,17 +4,21 @@ import { InputText } from "../../components/ui"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import Button from "../../components/ui/Button"
-import { useMutation, useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import { createUser, getAllCities } from "../../utils/api/api"
 import { toBoolean } from "../../utils/helper"
 import { useAppStore } from "../../app/store"
 import { motion } from "motion/react"
+import AutoComplete from "../../components/ui/AutoComplete"
 
 export default function Register() {
     usePageTitle("Inscription")
     const [showPassword, setShowPassword] = useState(false)
+    const [query, setQuery] = useState('')
+    const [selected, setSelected] = useState(null)
     const pushToast = useAppStore.use.pushToast()
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
     const querKey = ['cities']
 
     let retry = import.meta.env.VITE_RETRY_LIMIT
@@ -24,10 +28,11 @@ export default function Register() {
         retry = parseInt(retry) || 2
     }
 
-    const { isLoading, data, error } = useQuery(querKey, () => getAllCities(), {
-        retry: retry || false
+    const { isLoading, data, error, refetch: getCities } = useQuery(querKey, ({ signal }) => getAllCities(signal, query), {
+        retry: retry || false,
+        enabled: false
     })
-    const cities = data || []
+    const cities = data?.cities || []
 
     const { isLoading: creating, mutate: create, reset } = useMutation(data => createUser(data), {
         onSuccess: (data) => {
@@ -55,11 +60,21 @@ export default function Register() {
         setShowPassword(!showPassword)
     }
 
+    useEffect(() => {
+        if (query.length < 2) return
+        const handler = setTimeout(() => {
+            queryClient.cancelQueries(querKey)
+            getCities()
+        }, 500)
+
+        return () => clearTimeout(handler)
+    }, [query])
+
     function handleSubmit(e) {
         e.preventDefault()
         const formData = new FormData(e.target)
         const data = Object.fromEntries(formData)
-        if (data.cityId) data.cityId = parseInt(data.cityId, 10)
+        if (selected) data.cityId = selected.id
         if (data.password !== data.pwd_confirmation) {
             pushToast({ message: "Les mots de passe ne correspondent pas.", type: 'error' })
             return
@@ -186,14 +201,20 @@ export default function Register() {
                             </div>
 
                             <div className="sm:col-span-3">
-                                {isLoading
-                                ? <span className="loading loading-spinner ml-4"></span>
-                                : <select defaultValue="Votre ville" name="cityId" disabled={error ? true : false} required={true} className="select select-secondary col-start-1 row-start-1 w-full appearance-none sm:text-sm/6">
-                                    <option disabled={true}>Votre ville</option>
-                                    {cities.length > 0 && cities.map(citie => (
-                                        <option key={citie.id} value={citie.id}>{citie.name}</option>
-                                    ))}
-                                </select>}
+                                <AutoComplete
+                                    id="query"
+                                    name="query"
+                                    autoComplete="city"
+                                    className="w-full text-base outline outline-1 -outline-offset-1 outline-secondary placeholder:text-secondary-content focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-secondary sm:text-sm/6"
+                                    label="Votre ville"
+                                    placeholder="Votre ville"
+                                    isLoading={isLoading}
+                                    data={cities}
+                                    value={query}
+                                    selected={selected}
+                                    onSelection={setSelected}
+                                    onChange={setQuery}
+                                />
                             </div>
                         </div>
                     </fieldset>
