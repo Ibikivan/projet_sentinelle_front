@@ -15,7 +15,8 @@ export const getCurrentUser = async () => {
     return response.data
 }
 
-export const getAllCities = async (signal, query) => {let queryParams = {}
+export const getAllCities = async (signal, query) => {
+    let queryParams = {}
     if (query) queryParams.q = query
 
     const response = await axiosInstance.get("/cities", {
@@ -62,5 +63,13 @@ export const verifyChangePwdOtp = async (data) => {
 
 export const resetPassword = async (data) => {
     const response = await axiosInstance.post('/auth/reset-password', data)
+    return response.data
+}
+
+export const getAllSessions = async (queries) => {
+    const queryParams = Object.assign({}, queries)
+    const response = await axiosInstance.get('/prayer-session/all', {
+        params: queryParams
+    })
     return response.data
 }

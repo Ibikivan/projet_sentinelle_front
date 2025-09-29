@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../assets/sentinelle_logo.png"
 import HeaderHome from "../HeaderHome";
 import ToggleSidebar from "../ToggleSidebar";
@@ -13,39 +13,42 @@ const variants = {
 export default function SideBar() {
 
     const [isOpen, setIsOpen] = useState(true)
-    const [active, setActive] = useState({
-        name: "Session de prière",
-        link: '/',
-        active: false,
-        children: null
-    })
+    const screenWidth = window.innerWidth
 
     const navLinksItems = [
         {
             name: "Session de prière",
             link: '/',
             active: false,
-            children: null
+            children: 'test'
         },
         {
             name: "Sujets de prière",
-            link: 'subjects',
+            link: '#',
             active: false,
-            children: null
+            children: 'test'
         },
         {
             name: "Groupes",
-            link: 'crews',
+            link: '#',
             active: false,
             children: null
         },
         {
             name: "Communautés",
-            link: 'communauties',
+            link: '#',
             active: false,
             children: null
         },
     ]
+
+    useEffect(() => {
+        if (screenWidth >= 640) {
+            setIsOpen(true)
+        } else {
+            setIsOpen(false)
+        }
+    }, {screenWidth})
 
     function toggleSidebar() {
         setIsOpen(!isOpen)
@@ -57,7 +60,7 @@ export default function SideBar() {
             onClick={() => setIsOpen(false)}
         />
         <motion.div
-            className="w-70 sm:w-50 h-full sm:h-auto p-4 glass absolute sm:static z-3 flex flex-col gap-4"
+            className="w-70 sm:w-80 h-full sm:h-auto p-4 glass absolute sm:static z-3 flex flex-col gap-4"
             initial="visible"
             animate={isOpen ? "visible" : "hidden"}
             variants={variants}
@@ -65,16 +68,15 @@ export default function SideBar() {
             <HeaderHome logo={logo} title="Sentinelle" homePath="/" />
             <ToggleSidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
-            <ul>
+            <div className="flex flex-col gap-2">
                 {navLinksItems.map((item, index) => (
                     <NavLinkItem
                         key={`${index}-${item.link}`}
                         item={item}
-                        setActive={setActive}
-                        active={active}
+                        index={index}
                     />
                 ))}
-            </ul>
+            </div>
         </motion.div>
     </>
 

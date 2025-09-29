@@ -20,7 +20,7 @@ function AutoComplete({
     ...props
 }) {
     const [focused, setFocused] = useState(false)
-    const cities = [...data]
+    let cities = [...data]
 
     function handleSelection(city) {
         onChange(city.name)

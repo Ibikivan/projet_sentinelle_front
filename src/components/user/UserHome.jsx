@@ -1,26 +1,106 @@
+import { useQuery } from "react-query";
 import { useAppStore } from "../../app/store";
-import { InputText } from "../ui";
+import { getAllSessions } from "../../utils/api/api";
+import { toBoolean } from "../../utils/helper";
+import { useEffect, useState } from "react";
+import addIcon from "../../assets/addIcon.svg"
 
 export default function UserHome() {
 
-    const user = useAppStore.use.user()
+    const setFabConfig = useAppStore.use.setFabConfig()
+    const setFabSearch = useAppStore.use.setFabSearch()
+    const [queries, setQueries] = useState({})
     const pushToast = useAppStore.use.pushToast()
-    let count = 1
+    const queryKey = ['sessions']
 
-    function onSubmit() {
-        pushToast({ message: `Bravo ${count} ! Action réussi`, type: 'error' })
-        count++
+    let retry = import.meta.env.VITE_RETRY_LIMIT
+    if (retry === "false") {
+        retry = toBoolean(retry)
+    } else {
+        retry = parseInt(retry) || 2
     }
+    const { isLoading, error, data } = useQuery(queryKey, () => getAllSessions(queries), {
+        retry: retry || false
+    })
+    const sessions = data?.data.sessions || []
 
-    return <div className="flex items-center justify-center grow">
-            <div className="card w-85 bg-base-100 shadow-xl p-6 mx-auto my-6">
-            <h1 className="text-center text-3xl font-bold">{user.firstName} {user.lastName} welcome to the Home Page</h1>
+    useEffect(() => {
+        setFabConfig({
+            icon: addIcon,
+            onClick: () => alert("Ajouter une session de prière"),
+            isVisible: true
+        })
+        setFabSearch({
+            isSearching: false,
+            searchType: undefined,
+            searchField: null,
+            filters: [
+                { name: "Status", options: ["active", "completed"] },
+                { name: "Status", options: ["active", "completed"] },
+                { name: "Status", options: ["active", "completed"] },
+            ]
+        })
+        return () => {
+            setFabConfig(null)
+            setFabSearch(null)
+        }
+    }, [])
 
-            <InputText id="test" label="Champ de test" name="test" placeholder="Merci de renseigner le champ" />
-            <button className="btn" onClick={onSubmit}>Toast</button>
+    if (error) pushToast({ message: error?.response?.data?.message || "An error occured.", type: 'error' })
 
-            <p className="mt-4 text-center">This is a protected route. Only authorized users can see this page.</p>
+    return <div className="flex flex-col items-center grow p-4">
+        <h2 className="text-xl text-gray-700 pb-10 pt-4 px-4 self-start">Session de prière</h2>
+
+        <div className="container m-auto max-w-130">
+            {isLoading
+                ? <span className="loading loading-spinner ml-4"></span>
+                : <ul className="w-full p-4 rounded-sm text-gray-500">
+                    {sessions.map((session, index) => (
+                        <>
+                            <li
+                                key={`${index}1-${session.id}`}
+                                className="p-2 my-2 glass bg-white w-full rounded-sm"
+                            >
+                                {/* {console.log(session)} */}
+                                <p className="text-gray-700">{session.description}</p>
+                                <p className="mb-2">Statut: {session.status}</p>
+                                <p className="mb-2">Sujet: {session.subject.title}</p>
+                                <p>{session.location.name} • {session.location.countryName}</p>
+                            </li>
+                            <li
+                                key={`${index}2-${session.id}`}
+                                className="p-2 my-2 glass bg-white w-full rounded-sm"
+                            >
+                                {/* {console.log(session)} */}
+                                <p className="text-gray-700">{session.description}</p>
+                                <p className="mb-2">Statut: {session.status}</p>
+                                <p className="mb-2">Sujet: {session.subject.title}</p>
+                                <p>{session.location.name} • {session.location.countryName}</p>
+                            </li>
+                            <li
+                                key={`${index}3-${session.id}`}
+                                className="p-2 my-2 glass bg-white w-full rounded-sm"
+                            >
+                                {/* {console.log(session)} */}
+                                <p className="text-gray-700">{session.description}</p>
+                                <p className="mb-2">Statut: {session.status}</p>
+                                <p className="mb-2">Sujet: {session.subject.title}</p>
+                                <p>{session.location.name} • {session.location.countryName}</p>
+                            </li>
+                            <li
+                                key={`${index}4-${session.id}`}
+                                className="p-2 my-2 glass bg-white w-full rounded-sm"
+                            >
+                                {/* {console.log(session)} */}
+                                <p className="text-gray-700">{session.description}</p>
+                                <p className="mb-2">Statut: {session.status}</p>
+                                <p className="mb-2">Sujet: {session.subject.title}</p>
+                                <p>{session.location.name} • {session.location.countryName}</p>
+                            </li>
+                        </>
+                    ))}
+                </ul>
+            }
         </div>
     </div>
-
 }

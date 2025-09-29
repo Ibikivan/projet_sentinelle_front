@@ -1,13 +1,24 @@
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function NavLinkItem({ item, setActive, active }) {
-    const isActive = active.link === item.link
-    return <li>
-        <Link
-            to={`${item.link}`}
-            className={`${isActive && 'glass text-gray-400'} flex justify-between items-center py-3 hover:glass hover:text-gray-400 -mx-4 px-6`}
-            onClick={() => setActive(item)}
-        >{item.name}</Link>
-        {item.children && <span>v</span>}
-    </li>
+export default function NavLinkItem({ item, index }) {
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    
+    function handleCheck() {
+        console.log(`${item.link}`)
+        navigate(`${item.link}`)
+    }
+
+    const isActive = location.pathname === item.link
+
+    return <div
+        className={`collapse ${item.children && 'collapse-arrow'} ${isActive ?'bg-base-200' : 'bg-base-100'} hover:bg-base-200 border border-base-300`}
+        onClick={handleCheck}
+    >
+        <input type="radio" name="sidebar-nav" defaultChecked={ index === 0 ? true : false } />
+        <div className="collapse-title font-semibold">{item.name}</div>
+        {item.children && <div className="collapse-content text-sm">Click the "Sign Up" button in the top right corner and follow the registration process.</div>}
+    </div>
+
 }

@@ -19,7 +19,7 @@ export default function Register() {
     const pushToast = useAppStore.use.pushToast()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
-    const querKey = ['cities']
+    const queryKey = ['cities']
 
     let retry = import.meta.env.VITE_RETRY_LIMIT
     if (retry === "false") {
@@ -28,7 +28,7 @@ export default function Register() {
         retry = parseInt(retry) || 2
     }
 
-    const { isLoading, data, error, refetch: getCities } = useQuery(querKey, ({ signal }) => getAllCities(signal, query), {
+    const { isLoading, data, error, refetch: getCities } = useQuery(queryKey, ({ signal }) => getAllCities(signal, query), {
         retry: retry || false,
         enabled: false
     })
@@ -63,7 +63,7 @@ export default function Register() {
     useEffect(() => {
         if (query.length < 2) return
         const handler = setTimeout(() => {
-            queryClient.cancelQueries(querKey)
+            queryClient.cancelQueries(queryKey)
             getCities()
         }, 500)
 

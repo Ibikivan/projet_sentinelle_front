@@ -52,6 +52,14 @@ export const useAppStore = createSelectors(
                 set((state) => ({
                     toasts: state.toasts.filter(t => t.id !== toastId)
                 }))
+            },
+            fabConfig: null,
+            setFabConfig(config) {
+                set({ fabConfig: config })
+            },
+            fabSearch: null,
+            setFabSearch(config) {
+                set({ fabSearch: config })
             }
         }
     }, {
